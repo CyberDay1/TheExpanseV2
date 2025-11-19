@@ -3,6 +3,7 @@ package com.cyber3d.verticalexpansion.worldgen;
 import com.cyber3d.verticalexpansion.core.VerticalExpansionConfig;
 import com.cyber3d.verticalexpansion.core.WorldHeightConfig;
 import com.cyber3d.verticalexpansion.features.FeatureRegistry;
+import com.cyber3d.verticalexpansion.ore.OreProfile;
 import com.cyber3d.verticalexpansion.ore.OreProfileRegistry;
 import com.cyber3d.verticalexpansion.terrain.DefaultWorldTerrainProfile;
 import com.cyber3d.verticalexpansion.terrain.NoiseBasedTerrainHeightFunction;
