@@ -31,7 +31,9 @@ public final class WorldGenInitializer {
 
     public static void initialize() {
         if (initialized) {
-            LOGGER.debug("WorldGenInitializer already initialized");
+            if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+                LOGGER.debug("WorldGenInitializer already initialized");
+            }
             return;
         }
 
@@ -52,7 +54,9 @@ public final class WorldGenInitializer {
         densityFunctionIntegration.initialize();
 
         biomePalette = new BiomePalette(heightConfig.seaLevel());
-        LOGGER.debug("BiomePalette initialized with sea level: {}", heightConfig.seaLevel());
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("BiomePalette initialized with sea level: {}", heightConfig.seaLevel());
+        }
 
         ChunkGeneratorRegistry.registerChunkGenerator();
 
@@ -82,16 +86,22 @@ public final class WorldGenInitializer {
         densityFunctionIntegration = null;
         biomePalette = null;
         initialized = false;
-        LOGGER.debug("WorldGenInitializer reset");
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("WorldGenInitializer reset");
+        }
     }
 
     public static void registerChunkGenerator_1_21_1() {
-        LOGGER.debug("Registering chunk generator for MC 1.21.1–1.21.4");
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Registering chunk generator for MC 1.21.1–1.21.4");
+        }
         ChunkGeneratorRegistry.registerChunkGenerator();
     }
 
     public static void registerBiomeModifiers_1_21_1() {
-        LOGGER.debug("Registering biome modifiers for MC 1.21.1–1.21.4");
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Registering biome modifiers for MC 1.21.1–1.21.4");
+        }
         
         OreProfileRegistry ores = OreProfileRegistry.getInstance();
         FeatureRegistry features = FeatureRegistry.getInstance();
@@ -156,27 +166,37 @@ public final class WorldGenInitializer {
                 deepCaveDescriptor.minHeight, deepCaveDescriptor.maxHeight);
         }
         
-        LOGGER.debug("Biome modifier registration infrastructure prepared.");
-        LOGGER.debug("TODO: Create BiomeModifier entries from these descriptors and register");
-        LOGGER.debug("      via NeoForge bootstrap/RegisterEvent.");
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Biome modifier registration infrastructure prepared.");
+            LOGGER.debug("TODO: Create BiomeModifier entries from these descriptors and register");
+            LOGGER.debug("      via NeoForge bootstrap/RegisterEvent.");
+        }
     }
 
     public static void registerBiomeLoadingEvents_1_21_1() {
-        LOGGER.debug("Registering biome loading events for MC 1.21.1–1.21.4");
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Registering biome loading events for MC 1.21.1–1.21.4");
+        }
     }
 
     public static void registerChunkGenerator_1_21_5() {
-        LOGGER.debug("Registering chunk generator for MC 1.21.5+");
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Registering chunk generator for MC 1.21.5+");
+        }
         registerChunkGenerator_1_21_1();
     }
 
     public static void registerBiomeModifiers_1_21_5() {
-        LOGGER.debug("Registering biome modifiers for MC 1.21.5+");
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Registering biome modifiers for MC 1.21.5+");
+        }
         registerBiomeModifiers_1_21_1();
     }
 
     public static void registerBiomeLoadingEvents_1_21_5() {
-        LOGGER.debug("Registering biome loading events for MC 1.21.5+");
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Registering biome loading events for MC 1.21.5+");
+        }
         registerBiomeLoadingEvents_1_21_1();
     }
 

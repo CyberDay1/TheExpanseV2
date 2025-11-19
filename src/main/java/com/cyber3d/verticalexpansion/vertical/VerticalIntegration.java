@@ -38,7 +38,9 @@ public final class VerticalIntegration {
 
     private static void initializeManager() {
         if (manager != null) {
-            LOGGER.debug("VerticalSectionManager already initialized");
+            if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+                LOGGER.debug("VerticalSectionManager already initialized");
+            }
             return;
         }
 

@@ -1,5 +1,6 @@
 package com.cyber3d.verticalexpansion.worldgen;
 
+import com.cyber3d.verticalexpansion.core.VerticalExpansionConfig;
 import com.cyber3d.verticalexpansion.terrain.TerrainHeightFunction;
 import com.cyber3d.verticalexpansion.terrain.WorldTerrainProfile;
 import com.mojang.serialization.Codec;
@@ -56,14 +57,16 @@ public final class DensityFunctionIntegration {
 
     public void initialize() {
         LOGGER.info("Initializing DensityFunctionIntegration");
-        LOGGER.debug("Terrain profile: {} at scale factors {}, {}, {}, {}, {}",
-            terrainProfile.getClass().getSimpleName(),
-            terrainProfile.continentsScale(),
-            terrainProfile.erosionScale(),
-            terrainProfile.ridgeScale(),
-            terrainProfile.valleyScale(),
-            terrainProfile.detailScale()
-        );
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Terrain profile: {} at scale factors {}, {}, {}, {}, {}",
+                terrainProfile.getClass().getSimpleName(),
+                terrainProfile.continentsScale(),
+                terrainProfile.erosionScale(),
+                terrainProfile.ridgeScale(),
+                terrainProfile.valleyScale(),
+                terrainProfile.detailScale()
+            );
+        }
         
         wrapAndRegisterDensityFunction();
     }
@@ -81,21 +84,25 @@ public final class DensityFunctionIntegration {
             terrainProfile.ridgeScale(),
             terrainProfile.getClass().getSimpleName());
         
-        LOGGER.debug("Terrain height function integration:");
-        LOGGER.debug("  - Height range: {} to {} blocks", 
-            terrainHeightFunction.getClass().getSimpleName(),
-            "per-coordinate computation");
-        LOGGER.debug("  - Density function min/max: {}/{}", 
-            densityFunction.minValue(), densityFunction.maxValue());
-        
-        LOGGER.debug("NOTE: Actual DensityFunction registration with Minecraft's registry");
-        LOGGER.debug("      requires bootstrap or RegisterEvent. This integration provides");
-        LOGGER.debug("      the computed density values that would be used in chunk generation.");
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Terrain height function integration:");
+            LOGGER.debug("  - Height range: {} to {} blocks", 
+                terrainHeightFunction.getClass().getSimpleName(),
+                "per-coordinate computation");
+            LOGGER.debug("  - Density function min/max: {}/{}", 
+                densityFunction.minValue(), densityFunction.maxValue());
+            
+            LOGGER.debug("NOTE: Actual DensityFunction registration with Minecraft's registry");
+            LOGGER.debug("      requires bootstrap or RegisterEvent. This integration provides");
+            LOGGER.debug("      the computed density values that would be used in chunk generation.");
+        }
     }
 
     private void logSample(int x, int z) {
         int height = terrainHeightFunction.computeHeight(x, z, terrainProfile);
-        LOGGER.debug("Sample terrain at ({}, {}): height = {}", x, z, height);
+        if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
+            LOGGER.debug("Sample terrain at ({}, {}): height = {}", x, z, height);
+        }
     }
 
     public static final class TerrainHeightDensityFunction implements DensityFunction.SimpleFunction {
