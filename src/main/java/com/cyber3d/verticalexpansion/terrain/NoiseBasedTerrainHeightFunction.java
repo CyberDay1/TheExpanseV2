@@ -19,19 +19,22 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
     private final NoiseSampler ridge;
     private final NoiseSampler valley;
     private final NoiseSampler detail;
+    private final NoiseSampler ravineNoise;
 
     public NoiseBasedTerrainHeightFunction(
             NoiseSampler continents,
             NoiseSampler erosion,
             NoiseSampler ridge,
             NoiseSampler valley,
-            NoiseSampler detail
+            NoiseSampler detail,
+            NoiseSampler ravineNoise
     ) {
         this.continents = continents;
         this.erosion = erosion;
         this.ridge = ridge;
         this.valley = valley;
         this.detail = detail;
+        this.ravineNoise = ravineNoise;
     }
 
     @Override
@@ -56,14 +59,43 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
         double r = ridge.sample((int) rx, (int) rz);
         double v = valley.sample((int) vx, (int) vz);
         double d = detail.sample((int) dx, (int) dz);
-        
-        double c01 = (c + 1.0) / 2.0;
+
+        double baseLandHeight = computeBaseLandHeight(x, z, profile, c, e, r, v, d);
+
+        double height;
+        if (c < profile.deepOceanThreshold()) {
+            double t = clamp((profile.deepOceanThreshold() - c) / 0.5, 0.0, 1.0);
+            double depth = lerp(profile.shallowOceanDepth(), profile.deepOceanDepth(), t);
+            height = profile.seaLevel() - depth;
+        } else if (c < profile.oceanThreshold()) {
+            height = profile.seaLevel() - profile.shallowOceanDepth();
+        } else {
+            height = baseLandHeight;
+        }
+
+        height = applyRivers(x, z, height, profile);
+        height = applyRavines(x, z, height, profile, c);
+
+        double clamped = clamp(height, profile.minY(), profile.maxY());
+        return (int) Math.round(clamped);
+    }
+
+    private double computeBaseLandHeight(
+        int x, int z,
+        WorldTerrainProfile profile,
+        double continents,
+        double erosion,
+        double ridge,
+        double valley,
+        double detail
+    ) {
+        double c01 = (continents + 1.0) / 2.0;
         double base = profile.seaLevel() + profile.baseHeightAmplitude() * (c01 - 0.5);
         
-        double erosionFactor = 1.0 - ((e + 1.0) / 2.0);
-        double mountainBoost = r * erosionFactor * profile.mountainBoostAmplitude();
-        double valleyCut = v * profile.valleyDepth();
-        double localDetail = d * (profile.baseHeightAmplitude() * 0.3);
+        double erosionFactor = 1.0 - ((erosion + 1.0) / 2.0);
+        double mountainBoost = ridge * erosionFactor * profile.mountainBoostAmplitude();
+        double valleyCut = -Math.abs(valley) * profile.valleyDepth();
+        double detailEffect = detail * (profile.baseHeightAmplitude() * 0.3);
         
         double extremeBoost = 0.0;
         if (profile.enableMegaMountains()) {
@@ -71,12 +103,74 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
             extremeBoost = extremeMask * profile.extremeMountainBoost();
         }
         
-        double rawHeight = base + mountainBoost + localDetail + extremeBoost - valleyCut;
-        int height = (int) Math.round(rawHeight);
-        
-        return clamp(height, profile.minY(), profile.maxY());
+        return base + mountainBoost + valleyCut + detailEffect + extremeBoost;
+    }
+
+    private double applyRivers(int x, int z, double height, WorldTerrainProfile profile) {
+        double riverNoiseValue = valley.sample((int)(x * profile.valleyScale()), (int)(z * profile.valleyScale()));
+        double d = Math.abs(riverNoiseValue);
+
+        double width = profile.riverWidth();
+        if (d > width) {
+            return height;
+        }
+
+        double edgeT = d / width;
+        double centerT = 1.0 - edgeT;
+        centerT = centerT * centerT;
+
+        double maxDepth = profile.riverMaxDepth();
+        double carveDepth = maxDepth * centerT;
+
+        return height - carveDepth;
+    }
+
+    private double applyRavines(
+        int x,
+        int z,
+        double height,
+        WorldTerrainProfile profile,
+        double continents
+    ) {
+        double nx = x * profile.ravineFrequency();
+        double nz = z * profile.ravineFrequency() * profile.ravineStretch();
+
+        double ravineValue = ravineNoise.sample((int) nx, (int) nz);
+        double d = Math.abs(ravineValue);
+
+        double band = 0.15;
+        if (d > band) {
+            return height;
+        }
+
+        double t = d / band;
+        double centerT = 1.0 - t;
+        centerT = centerT * centerT * centerT;
+
+        boolean isOceanColumn = continents < profile.oceanThreshold();
+
+        double strength = isOceanColumn
+            ? profile.oceanRavineStrength()
+            : profile.landRavineStrength();
+
+        if (strength <= 0.0) {
+            return height;
+        }
+
+        double verticalRange = profile.maxY() - profile.minY();
+        double maxCarveDepth = verticalRange * 0.5 * strength;
+
+        double carveDepth = maxCarveDepth * centerT;
+
+        double carvedHeight = height - carveDepth;
+
+        return Math.min(height, carvedHeight);
     }
     
+    private static double lerp(double a, double b, double t) {
+        return a + (b - a) * t;
+    }
+
     private static double clamp(double value, double min, double max) {
         if (value < min) return min;
         if (value > max) return max;
@@ -87,5 +181,12 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
         if (value < min) return min;
         if (value > max) return max;
         return value;
+    }
+
+    @Override
+    public double computeContinentalness(int x, int z, WorldTerrainProfile profile) {
+        double cx = x * profile.continentsScale();
+        double cz = z * profile.continentsScale();
+        return continents.sample((int) cx, (int) cz);
     }
 }

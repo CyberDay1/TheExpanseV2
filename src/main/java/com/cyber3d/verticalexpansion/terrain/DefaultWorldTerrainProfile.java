@@ -25,6 +25,19 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
     private final boolean enableUndergroundRivers;
     private final boolean enableMegaMountains;
 
+    private final double oceanThreshold;
+    private final double deepOceanThreshold;
+    private final int shallowOceanDepth;
+    private final int deepOceanDepth;
+
+    private final double riverWidth;
+    private final int riverMaxDepth;
+
+    private final double landRavineStrength;
+    private final double oceanRavineStrength;
+    private final double ravineFrequency;
+    private final double ravineStretch;
+
     public DefaultWorldTerrainProfile(
             WorldHeightConfig heightConfig,
             double continentsScale,
@@ -41,7 +54,17 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
             int skyBandStartY,
             boolean enableSkyTerrain,
             boolean enableUndergroundRivers,
-            boolean enableMegaMountains
+            boolean enableMegaMountains,
+            double oceanThreshold,
+            double deepOceanThreshold,
+            int shallowOceanDepth,
+            int deepOceanDepth,
+            double riverWidth,
+            int riverMaxDepth,
+            double landRavineStrength,
+            double oceanRavineStrength,
+            double ravineFrequency,
+            double ravineStretch
     ) {
         this.heightConfig = heightConfig;
         this.continentsScale = continentsScale;
@@ -59,6 +82,16 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
         this.enableSkyTerrain = enableSkyTerrain;
         this.enableUndergroundRivers = enableUndergroundRivers;
         this.enableMegaMountains = enableMegaMountains;
+        this.oceanThreshold = oceanThreshold;
+        this.deepOceanThreshold = deepOceanThreshold;
+        this.shallowOceanDepth = shallowOceanDepth;
+        this.deepOceanDepth = deepOceanDepth;
+        this.riverWidth = riverWidth;
+        this.riverMaxDepth = riverMaxDepth;
+        this.landRavineStrength = landRavineStrength;
+        this.oceanRavineStrength = oceanRavineStrength;
+        this.ravineFrequency = ravineFrequency;
+        this.ravineStretch = ravineStretch;
     }
 
     public static DefaultWorldTerrainProfile standard(WorldHeightConfig heightConfig) {
@@ -78,7 +111,17 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
                 900,      
                 true,     
                 true,     
-                true      
+                true,
+                -0.1,
+                -0.5,
+                20,
+                60,
+                0.04,
+                16,
+                0.8,
+                0.6,
+                0.0025,
+                3.0
         );
     }
 
@@ -170,5 +213,55 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
     @Override
     public boolean enableMegaMountains() {
         return enableMegaMountains;
+    }
+
+    @Override
+    public double oceanThreshold() {
+        return oceanThreshold;
+    }
+
+    @Override
+    public double deepOceanThreshold() {
+        return deepOceanThreshold;
+    }
+
+    @Override
+    public int shallowOceanDepth() {
+        return shallowOceanDepth;
+    }
+
+    @Override
+    public int deepOceanDepth() {
+        return deepOceanDepth;
+    }
+
+    @Override
+    public double riverWidth() {
+        return riverWidth;
+    }
+
+    @Override
+    public int riverMaxDepth() {
+        return riverMaxDepth;
+    }
+
+    @Override
+    public double landRavineStrength() {
+        return landRavineStrength;
+    }
+
+    @Override
+    public double oceanRavineStrength() {
+        return oceanRavineStrength;
+    }
+
+    @Override
+    public double ravineFrequency() {
+        return ravineFrequency;
+    }
+
+    @Override
+    public double ravineStretch() {
+        return ravineStretch;
     }
 }

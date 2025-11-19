@@ -16,6 +16,7 @@ public final class DensityFunctionIntegration {
     private static DensityFunctionIntegration instance;
     
     private final TerrainHeightDensityFunction densityFunction;
+    private final ContinentalnessDensityFunction continentalnessDensityFunction;
     private final TerrainHeightFunction terrainHeightFunction;
     private final WorldTerrainProfile terrainProfile;
 
@@ -26,6 +27,10 @@ public final class DensityFunctionIntegration {
         this.terrainHeightFunction = terrainHeightFunction;
         this.terrainProfile = terrainProfile;
         this.densityFunction = new TerrainHeightDensityFunction(
+            terrainHeightFunction,
+            terrainProfile
+        );
+        this.continentalnessDensityFunction = new ContinentalnessDensityFunction(
             terrainHeightFunction,
             terrainProfile
         );
@@ -45,6 +50,10 @@ public final class DensityFunctionIntegration {
 
     public DensityFunction getTerrainDensityFunction() {
         return new TerrainHeightDensityFunction(terrainHeightFunction, terrainProfile);
+    }
+
+    public ContinentalnessDensityFunction getContinentalnessDensityFunction() {
+        return continentalnessDensityFunction;
     }
 
     public TerrainHeightFunction getHeightFunction() {
@@ -139,6 +148,43 @@ public final class DensityFunctionIntegration {
         @Override
         public KeyDispatchDataCodec<? extends DensityFunction> codec() {
             throw new UnsupportedOperationException("TerrainHeightDensityFunction cannot be serialized");
+        }
+    }
+
+    public static final class ContinentalnessDensityFunction implements DensityFunction.SimpleFunction {
+        private final TerrainHeightFunction heightFunction;
+        private final WorldTerrainProfile profile;
+
+        public ContinentalnessDensityFunction(TerrainHeightFunction heightFunction, WorldTerrainProfile profile) {
+            this.heightFunction = heightFunction;
+            this.profile = profile;
+        }
+
+        @Override
+        public double compute(DensityFunction.FunctionContext context) {
+            int x = context.blockX();
+            int z = context.blockZ();
+            return heightFunction.computeContinentalness(x, z, profile);
+        }
+
+        @Override
+        public DensityFunction mapAll(DensityFunction.Visitor visitor) {
+            return visitor.apply(this);
+        }
+
+        @Override
+        public double minValue() {
+            return -1.0;
+        }
+
+        @Override
+        public double maxValue() {
+            return 1.0;
+        }
+
+        @Override
+        public KeyDispatchDataCodec<? extends DensityFunction> codec() {
+            throw new UnsupportedOperationException("ContinentalnessDensityFunction cannot be serialized");
         }
     }
 }

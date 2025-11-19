@@ -33,6 +33,11 @@ public final class VerticalExpansionChunkGenerator {
                 public int computeHeight(int x, int z, WorldTerrainProfile profile) {
                     return (heightConfig.minY() + heightConfig.maxY()) / 2;
                 }
+
+                @Override
+                public double computeContinentalness(int x, int z, WorldTerrainProfile profile) {
+                    return 0.0;
+                }
             };
             this.terrainDensity = null;
         }

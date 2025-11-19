@@ -16,4 +16,14 @@ public interface TerrainHeightFunction {
      * @return height clamped to [profile.minY(), profile.maxY()]
      */
     int computeHeight(int x, int z, WorldTerrainProfile profile);
+
+    /**
+     * Compute the continentalness value at (x, z) for biome/feature placement.
+     *
+     * @param x world-space block x
+     * @param z world-space block z
+     * @param profile global world terrain profile
+     * @return continentalness value (typically in [-1, 1])
+     */
+    double computeContinentalness(int x, int z, WorldTerrainProfile profile);
 }

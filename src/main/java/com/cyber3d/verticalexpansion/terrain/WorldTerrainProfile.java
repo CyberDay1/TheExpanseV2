@@ -33,4 +33,20 @@ public interface WorldTerrainProfile {
     boolean enableSkyTerrain();
     boolean enableUndergroundRivers();
     boolean enableMegaMountains();
+
+    // Oceans / deep oceans
+    double oceanThreshold();
+    double deepOceanThreshold();
+    int shallowOceanDepth();
+    int deepOceanDepth();
+
+    // Rivers
+    double riverWidth();
+    int riverMaxDepth();
+
+    // Ravines
+    double landRavineStrength();
+    double oceanRavineStrength();
+    double ravineFrequency();
+    double ravineStretch();
 }

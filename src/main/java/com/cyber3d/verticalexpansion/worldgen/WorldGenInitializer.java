@@ -47,7 +47,8 @@ public final class WorldGenInitializer {
             new PerlinNoiseSampler(createNoise(1002), terrainProfile.erosionScale()),
             new PerlinNoiseSampler(createNoise(1003), terrainProfile.ridgeScale()),
             new PerlinNoiseSampler(createNoise(1004), terrainProfile.valleyScale()),
-            new PerlinNoiseSampler(createNoise(1005), terrainProfile.detailScale())
+            new PerlinNoiseSampler(createNoise(1005), terrainProfile.detailScale()),
+            new PerlinNoiseSampler(createNoise(1006), terrainProfile.ravineFrequency())
         );
 
         densityFunctionIntegration = new DensityFunctionIntegration(heightFunction, terrainProfile);
