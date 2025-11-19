@@ -1,29 +1,27 @@
 plugins {
     id("java")
+    id("net.neoforged.moddev") version "2.0.+"
 }
 
 version = project.property("mod_version")!!
 group = project.property("maven_group")!!
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+neoForge {
+    version = "21.1.209"
 }
 
 repositories {
-    mavenLocal()
-    maven("https://maven.neoforged.net/releases") {
-        name = "NeoForged"
-    }
-    maven("https://maven.neoforged.net/releases/net/neoforged/") {
-        name = "NeoForgedDev"
-    }
+    maven("https://maven.neoforged.net/releases")
     mavenCentral()
 }
 
 dependencies {
-    implementation("net.neoforged:neoforge:21.1.209")
-    
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

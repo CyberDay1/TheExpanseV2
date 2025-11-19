@@ -8,7 +8,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@EventBusSubscriber(modid = "verticalexpansion", bus = EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = "verticalexpansion")
 public final class VerticalExpansionWorldgenEvents {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("VerticalExpansion");
@@ -22,7 +22,7 @@ public final class VerticalExpansionWorldgenEvents {
     }
 }
 
-@EventBusSubscriber(modid = "verticalexpansion", bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = "verticalexpansion")
 final class VerticalExpansionModEvents {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("VerticalExpansion");
