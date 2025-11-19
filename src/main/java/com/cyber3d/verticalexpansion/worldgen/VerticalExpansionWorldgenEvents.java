@@ -22,9 +22,3 @@ public final class VerticalExpansionWorldgenEvents {
     }
 }
 
-@EventBusSubscriber(modid = "verticalexpansion")
-final class VerticalExpansionModEvents {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger("VerticalExpansion");
-
-}
