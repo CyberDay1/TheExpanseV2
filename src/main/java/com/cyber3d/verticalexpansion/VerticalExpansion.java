@@ -10,14 +10,15 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.event.server.RegisterCommandsEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 @Mod("verticalexpansion")
 public class VerticalExpansion {
 
     public VerticalExpansion(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::onRegisterCommands);
+        NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {

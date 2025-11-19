@@ -33,7 +33,7 @@ public final class VerticalSectionManager {
     }
 
     private int getSectionIndexForY(int y) {
-        int minY = config.minY();
+        int minY = config.worldHeightConfig().minY();
         int sectionHeight = 16;
         return (y - minY) / sectionHeight;
     }
