@@ -1,24 +1,22 @@
-modLoader="neoforge"
-loaderVersion="[1,)"
+modLoader="javafml"
+loaderVersion="[4,)"
 license="MIT"
-issueTrackerURL="https://github.com/cyber3d/verticalexpansion/issues"
+issueTrackerURL="https://github.com/CyberDay1/TheExpanseV2/issues"
 
 [[mods]]
 modId="verticalexpansion"
-version="0.1.0"
-displayName="VerticalExpansion"
-logoFile="verticalexpansion_logo.png"
-logoBlur=true
-description="""
-Extends world height and introduces Tectonic-inspired terrain generation for Minecraft 1.21+.
-"""
-authors=["Cyber3D"]
-credits="Inspired by Tectonic"
+version="${file.jarVersion}"
+displayName="The Expanse V2"
+description='''Vertical world expansion and advanced terrain generation'''
+
+authors="Cyber3D"
+logoFile="logo.png"
+displayURL="https://github.com/CyberDay1/TheExpanseV2"
 
 [[dependencies.verticalexpansion]]
 modId="neoforge"
 mandatory=true
-versionRange="[21.1,)"
+versionRange="[21.1.0,)"
 ordering="NONE"
 side="BOTH"
 
