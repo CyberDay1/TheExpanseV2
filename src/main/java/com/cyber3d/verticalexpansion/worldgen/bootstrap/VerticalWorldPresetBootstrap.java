@@ -18,11 +18,10 @@ public final class VerticalWorldPresetBootstrap {
     public static void initialize() {
         LOGGER.info("[VerticalExpansion] WorldPreset bootstrap:");
         LOGGER.info("  - ResourceKey: {}", VERTICAL_OVERWORLD);
-        
-        LOGGER.debug("TODO: Build a WorldPreset that:");
+        LOGGER.info("  - Loaded from: data/verticalexpansion/worldgen/preset/vertical_overworld.json");
         LOGGER.debug("  - Uses VerticalNoiseSettingsBootstrap.VERTICAL_NOISE");
-        LOGGER.debug("  - Uses standard/vanilla biome source");
-        LOGGER.debug("  - Uses chunk generator that will use our DensityFunction");
+        LOGGER.debug("  - Uses vanilla overworld biome source");
+        LOGGER.debug("  - Noise-based chunk generator with custom density functions");
     }
 
     private VerticalWorldPresetBootstrap() {

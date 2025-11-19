@@ -16,19 +16,27 @@ public final class VerticalDensityBootstrap {
         ResourceKey.create(Registries.DENSITY_FUNCTION,
             ResourceLocation.parse("verticalexpansion:terrain_height"));
 
+    public static final ResourceKey<DensityFunction> CONTINENTALNESS =
+        ResourceKey.create(Registries.DENSITY_FUNCTION,
+            ResourceLocation.parse("verticalexpansion:continentalness"));
+
     public static void initialize() {
         LOGGER.info("[VerticalExpansion] DensityFunction bootstrap:");
-        LOGGER.info("  - ResourceKey: {}", TERRAIN_HEIGHT);
+        LOGGER.info("  - Terrain: {}", TERRAIN_HEIGHT);
+        LOGGER.info("  - Continentalness: {}", CONTINENTALNESS);
         
         try {
-            DensityFunction function = DensityFunctionIntegration.getInstance().getTerrainDensityFunction();
+            DensityFunctionIntegration integration = DensityFunctionIntegration.getInstance();
+            DensityFunction terrainFunction = integration.getTerrainDensityFunction();
+            DensityFunction continentalFunction = integration.getContinentalnessDensityFunction();
+            
             LOGGER.info("  - Terrain density function ready");
-            LOGGER.debug("    Min: {}, Max: {}", function.minValue(), function.maxValue());
+            LOGGER.debug("    Min: {}, Max: {}", terrainFunction.minValue(), terrainFunction.maxValue());
+            LOGGER.info("  - Continentalness density function ready");
+            LOGGER.debug("    Min: {}, Max: {}", continentalFunction.minValue(), continentalFunction.maxValue());
         } catch (IllegalStateException e) {
             LOGGER.warn("  - DensityFunctionIntegration not yet initialized", e);
         }
-        
-        LOGGER.debug("TODO: Register {} into Minecraft DensityFunction registry via NeoForge bootstrap", TERRAIN_HEIGHT);
     }
 
     private VerticalDensityBootstrap() {

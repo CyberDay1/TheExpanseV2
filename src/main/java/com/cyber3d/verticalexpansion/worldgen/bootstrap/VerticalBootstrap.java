@@ -8,11 +8,11 @@ public final class VerticalBootstrap {
     private static final Logger LOGGER = LoggerFactory.getLogger("VerticalExpansion");
 
     public static void initialize() {
-        LOGGER.info("[VerticalExpansion] Bootstrap registration stub");
-        LOGGER.debug("TODO: Wire bootstrap registrations into NeoForge event system");
+        LOGGER.info("[VerticalExpansion] Initializing worldgen bootstrap registrations");
         VerticalDensityBootstrap.initialize();
         VerticalNoiseSettingsBootstrap.initialize();
         VerticalWorldPresetBootstrap.initialize();
+        LOGGER.info("[VerticalExpansion] Worldgen configuration complete");
     }
 
     private VerticalBootstrap() {

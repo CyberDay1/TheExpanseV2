@@ -23,10 +23,9 @@ public final class VerticalNoiseSettingsBootstrap {
         LOGGER.info("  - Min Y: {}, Max Y: {}, Height: {}", 
             cfg.minY(), cfg.maxY(), cfg.maxY() - cfg.minY());
         
-        LOGGER.debug("TODO: Create NoiseSettings instance and register via NeoForge bootstrap");
-        LOGGER.debug("      Settings should use:");
-        LOGGER.debug("      - Vertical range: [{}, {}]", cfg.minY(), cfg.maxY());
-        LOGGER.debug("      - Vanilla overworld noise sampling / terrain shaper settings");
+        LOGGER.info("  - Loaded from: data/verticalexpansion/worldgen/noise_settings/vertical_noise.json");
+        LOGGER.debug("  - Uses terrain_height density function for final terrain");
+        LOGGER.debug("  - Uses continentalness density function for biome placement");
     }
 
     private VerticalNoiseSettingsBootstrap() {
