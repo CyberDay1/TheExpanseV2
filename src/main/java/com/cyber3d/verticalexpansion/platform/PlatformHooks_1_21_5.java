@@ -3,6 +3,7 @@ package com.cyber3d.verticalexpansion.platform;
 import com.cyber3d.verticalexpansion.features.FeatureRegistry;
 import com.cyber3d.verticalexpansion.ore.OreProfileRegistry;
 import com.cyber3d.verticalexpansion.ore.VanillaOresProvider;
+import com.cyber3d.verticalexpansion.vertical.VerticalIntegration;
 import com.cyber3d.verticalexpansion.worldgen.WorldGenInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,21 +42,21 @@ public final class PlatformHooks_1_21_5 implements PlatformHooks {
 
     @Override
     public void registerChunkGenerator() {
-        LOGGER.debug("Registering chunk generator for 1.21.5+");
+        WorldGenInitializer.registerChunkGenerator_1_21_5();
     }
 
     @Override
     public void registerBiomeModifiers() {
-        LOGGER.debug("Registering biome modifiers for 1.21.5+");
+        WorldGenInitializer.registerBiomeModifiers_1_21_5();
     }
 
     @Override
     public void hookBiomeLoadingEvents() {
-        LOGGER.debug("Hooking biome loading events for 1.21.5+");
+        WorldGenInitializer.registerBiomeLoadingEvents_1_21_5();
     }
 
     @Override
     public void registerVerticalSectionIntegration() {
-        LOGGER.debug("Registering vertical section integration for 1.21.5+");
+        VerticalIntegration.register_1_21_5();
     }
 }

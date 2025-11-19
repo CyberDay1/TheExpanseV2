@@ -74,4 +74,32 @@ public final class WorldGenInitializer {
         initialized = false;
         LOGGER.debug("WorldGenInitializer reset");
     }
+
+    public static void registerChunkGenerator_1_21_1() {
+        LOGGER.debug("Registering chunk generator for MC 1.21.1–1.21.4");
+        ChunkGeneratorRegistry.registerChunkGenerator();
+    }
+
+    public static void registerBiomeModifiers_1_21_1() {
+        LOGGER.debug("Registering biome modifiers for MC 1.21.1–1.21.4");
+    }
+
+    public static void registerBiomeLoadingEvents_1_21_1() {
+        LOGGER.debug("Registering biome loading events for MC 1.21.1–1.21.4");
+    }
+
+    public static void registerChunkGenerator_1_21_5() {
+        LOGGER.debug("Registering chunk generator for MC 1.21.5+");
+        registerChunkGenerator_1_21_1();
+    }
+
+    public static void registerBiomeModifiers_1_21_5() {
+        LOGGER.debug("Registering biome modifiers for MC 1.21.5+");
+        registerBiomeModifiers_1_21_1();
+    }
+
+    public static void registerBiomeLoadingEvents_1_21_5() {
+        LOGGER.debug("Registering biome loading events for MC 1.21.5+");
+        registerBiomeLoadingEvents_1_21_1();
+    }
 }
