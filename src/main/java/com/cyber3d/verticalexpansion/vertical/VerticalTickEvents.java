@@ -14,6 +14,6 @@ public final class VerticalTickEvents {
 
     @SubscribeEvent
     public static void onServerTickPost(ServerTickEvent.Post event) {
-        VerticalIntegration.onServerTick();
+        VerticalIntegration.onServerTick(event.getServer());
     }
 }

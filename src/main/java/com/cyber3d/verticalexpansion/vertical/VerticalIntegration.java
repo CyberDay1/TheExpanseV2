@@ -1,6 +1,7 @@
 package com.cyber3d.verticalexpansion.vertical;
 
 import com.cyber3d.verticalexpansion.core.VerticalExpansionConfig;
+import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +63,10 @@ public final class VerticalIntegration {
     /**
      * Called once per server tick to update section activity states.
      * This is hooked into NeoForge's ServerTickEvent via VerticalTickEvents.
+     * 
+     * @param server The MinecraftServer instance (may be used for player tracking or world-specific logic in the future).
      */
-    public static void onServerTick() {
+    public static void onServerTick(MinecraftServer server) {
         if (manager == null) {
             return;
         }

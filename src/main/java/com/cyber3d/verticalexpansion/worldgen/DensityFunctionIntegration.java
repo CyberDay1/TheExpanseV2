@@ -2,6 +2,10 @@ package com.cyber3d.verticalexpansion.worldgen;
 
 import com.cyber3d.verticalexpansion.terrain.TerrainHeightFunction;
 import com.cyber3d.verticalexpansion.terrain.WorldTerrainProfile;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.KeyDispatchDataCodec;
+import net.minecraft.world.level.levelgen.DensityFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +56,12 @@ public final class DensityFunctionIntegration {
     }
 
     private void wrapAndRegisterDensityFunction() {
-        LOGGER.debug("Wrapping TerrainHeightDensityFunction into Minecraft DensityFunction");
+        LOGGER.info("[VerticalExpansion] Wrapping TerrainHeightFunction into DensityFunction");
+
+        logSample(0, 0);
+        logSample(100, 100);
+        logSample(-200, 300);
+
         LOGGER.info("DensityFunctionIntegration ready for terrain: {}x{}y{}z with profile {}",
             terrainProfile.continentsScale(),
             terrainProfile.erosionScale(),
@@ -66,8 +75,50 @@ public final class DensityFunctionIntegration {
         LOGGER.debug("  - Density function min/max: {}/{}", 
             densityFunction.minValue(), densityFunction.maxValue());
         
-        LOGGER.debug("NOTE: Actual DensityFunction registration with Minecraft's NoiseRouter");
+        LOGGER.debug("NOTE: Actual DensityFunction registration with Minecraft's registry");
         LOGGER.debug("      requires bootstrap or RegisterEvent. This integration provides");
         LOGGER.debug("      the computed density values that would be used in chunk generation.");
+    }
+
+    private void logSample(int x, int z) {
+        int height = terrainHeightFunction.computeHeight(x, z, terrainProfile);
+        LOGGER.debug("Sample terrain at ({}, {}): height = {}", x, z, height);
+    }
+
+    public static final class TerrainHeightDensityFunction implements DensityFunction.SimpleFunction {
+        private final TerrainHeightFunction heightFunction;
+        private final WorldTerrainProfile profile;
+
+        public TerrainHeightDensityFunction(TerrainHeightFunction heightFunction, WorldTerrainProfile profile) {
+            this.heightFunction = heightFunction;
+            this.profile = profile;
+        }
+
+        @Override
+        public double compute(DensityFunction.FunctionContext context) {
+            int x = context.blockX();
+            int z = context.blockZ();
+            return heightFunction.computeHeight(x, z, profile);
+        }
+
+        @Override
+        public DensityFunction mapAll(DensityFunction.Visitor visitor) {
+            return visitor.apply(this);
+        }
+
+        @Override
+        public double minValue() {
+            return profile.minY();
+        }
+
+        @Override
+        public double maxValue() {
+            return profile.maxY();
+        }
+
+        @Override
+        public KeyDispatchDataCodec<? extends DensityFunction> codec() {
+            throw new UnsupportedOperationException("TerrainHeightDensityFunction cannot be serialized");
+        }
     }
 }

@@ -14,6 +14,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class WorldGenInitializer {
 
@@ -91,26 +93,72 @@ public final class WorldGenInitializer {
     public static void registerBiomeModifiers_1_21_1() {
         LOGGER.debug("Registering biome modifiers for MC 1.21.1–1.21.4");
         
-        FeatureRegistry features = FeatureRegistry.getInstance();
         OreProfileRegistry ores = OreProfileRegistry.getInstance();
+        FeatureRegistry features = FeatureRegistry.getInstance();
         
-        LOGGER.debug("Feature generators available: {} mega trees, {} coral reefs, {} deep caves",
-            features.isInitialized() ? "yes" : "no",
-            features.isInitialized() ? "yes" : "no",
-            features.isInitialized() ? "yes" : "no"
-        );
+        Map<String, OreModifierDescriptor> orePlacementMap = new HashMap<>();
         
-        int oreCount = ores.getAll().size();
-        LOGGER.debug("Ore profiles registered: {} total", oreCount);
-        
+        LOGGER.info("[VerticalExpansion] Building ore modifier descriptors:");
         for (String oreId : ores.getAll().keySet()) {
             OreProfile profile = ores.getAll().get(oreId);
-            LOGGER.debug("  - {}: minY={}, maxY={}", oreId, 
-                profile.minY(), profile.maxY());
+            
+            OreModifierDescriptor descriptor = new OreModifierDescriptor(
+                oreId,
+                profile.targetBlockTag(),
+                profile.minY(),
+                profile.maxY(),
+                profile.veinSize(),
+                profile.frequency(),
+                profile.distributionCurve()
+            );
+            
+            orePlacementMap.put(oreId, descriptor);
+            
+            LOGGER.info("  - Ore '{}': y=[{}, {}], size={}, freq={}, curve={}",
+                oreId,
+                profile.minY(),
+                profile.maxY(),
+                profile.veinSize(),
+                profile.frequency(),
+                profile.distributionCurve()
+            );
         }
         
-        LOGGER.debug("Biome modifier registration infrastructure initialized. " +
-            "Actual ore/feature placement will be applied via biome modifiers and JSON data files.");
+        LOGGER.info("[VerticalExpansion] Built {} ore placement descriptors", orePlacementMap.size());
+        
+        LOGGER.info("[VerticalExpansion] Building feature placement descriptors:");
+        if (features.isInitialized()) {
+            FeaturePlacementDescriptor megaTreeDescriptor = new FeaturePlacementDescriptor(
+                "mega_tree",
+                "mountain",
+                64,
+                512
+            );
+            LOGGER.info("  - Feature 'mega_tree': height=[{}, {}], biomes={mountain}",
+                megaTreeDescriptor.minHeight, megaTreeDescriptor.maxHeight);
+            
+            FeaturePlacementDescriptor coralReefDescriptor = new FeaturePlacementDescriptor(
+                "coral_reef",
+                "aquatic",
+                -64,
+                64
+            );
+            LOGGER.info("  - Feature 'coral_reef': height=[{}, {}], biomes={aquatic}",
+                coralReefDescriptor.minHeight, coralReefDescriptor.maxHeight);
+            
+            FeaturePlacementDescriptor deepCaveDescriptor = new FeaturePlacementDescriptor(
+                "deep_cave",
+                "underground",
+                -256,
+                -48
+            );
+            LOGGER.info("  - Feature 'deep_cave': height=[{}, {}], biomes={underground}",
+                deepCaveDescriptor.minHeight, deepCaveDescriptor.maxHeight);
+        }
+        
+        LOGGER.debug("Biome modifier registration infrastructure prepared.");
+        LOGGER.debug("TODO: Create BiomeModifier entries from these descriptors and register");
+        LOGGER.debug("      via NeoForge bootstrap/RegisterEvent.");
     }
 
     public static void registerBiomeLoadingEvents_1_21_1() {
@@ -135,5 +183,40 @@ public final class WorldGenInitializer {
     private static PerlinSimplexNoise createNoise(int seed) {
         RandomSource random = RandomSource.create(TERRAIN_BASE_SEED + seed);
         return new PerlinSimplexNoise(random, new IntArrayList(new int[]{0}));
+    }
+
+    private static final class OreModifierDescriptor {
+        final String oreId;
+        final net.minecraft.tags.TagKey<net.minecraft.world.level.block.Block> targetBlockTag;
+        final int minY;
+        final int maxY;
+        final int veinSize;
+        final float frequency;
+        final OreProfile.DistributionCurve distributionCurve;
+
+        OreModifierDescriptor(String oreId, net.minecraft.tags.TagKey<net.minecraft.world.level.block.Block> targetBlockTag,
+                              int minY, int maxY, int veinSize, float frequency, OreProfile.DistributionCurve distributionCurve) {
+            this.oreId = oreId;
+            this.targetBlockTag = targetBlockTag;
+            this.minY = minY;
+            this.maxY = maxY;
+            this.veinSize = veinSize;
+            this.frequency = frequency;
+            this.distributionCurve = distributionCurve;
+        }
+    }
+
+    private static final class FeaturePlacementDescriptor {
+        final String featureName;
+        final String biomeTag;
+        final int minHeight;
+        final int maxHeight;
+
+        FeaturePlacementDescriptor(String featureName, String biomeTag, int minHeight, int maxHeight) {
+            this.featureName = featureName;
+            this.biomeTag = biomeTag;
+            this.minHeight = minHeight;
+            this.maxHeight = maxHeight;
+        }
     }
 }
