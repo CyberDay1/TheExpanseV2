@@ -11,7 +11,8 @@ public final class VerticalNoiseSettingsBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("VerticalExpansion");
 
-    public static final ResourceKey<?> VERTICAL_NOISE =
+    @SuppressWarnings("unchecked")
+    public static final ResourceKey VERTICAL_NOISE =
         ResourceKey.create(Registries.NOISE_SETTINGS,
             ResourceLocation.parse("verticalexpansion:vertical_noise"));
 
