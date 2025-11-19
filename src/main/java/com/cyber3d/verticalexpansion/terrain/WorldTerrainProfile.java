@@ -1,4 +1,4 @@
-    package com.cyber3d.verticalexpansion.terrain;
+package com.cyber3d.verticalexpansion.terrain;
 
 /**
  * WorldTerrainProfile holds configurable parameters that control global terrain behavior.

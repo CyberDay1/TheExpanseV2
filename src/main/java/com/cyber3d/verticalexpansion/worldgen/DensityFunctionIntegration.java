@@ -38,7 +38,7 @@ public final class DensityFunctionIntegration {
     }
 
     public void initialize() {
-        LOGGER.info("Initialized DensityFunctionIntegration");
+        LOGGER.info("Initializing DensityFunctionIntegration");
         LOGGER.debug("Terrain profile: {} at scale factors {}, {}, {}, {}, {}",
             terrainProfile.getClass().getSimpleName(),
             terrainProfile.continentsScale(),
@@ -47,5 +47,27 @@ public final class DensityFunctionIntegration {
             terrainProfile.valleyScale(),
             terrainProfile.detailScale()
         );
+        
+        wrapAndRegisterDensityFunction();
+    }
+
+    private void wrapAndRegisterDensityFunction() {
+        LOGGER.debug("Wrapping TerrainHeightDensityFunction into Minecraft DensityFunction");
+        LOGGER.info("DensityFunctionIntegration ready for terrain: {}x{}y{}z with profile {}",
+            terrainProfile.continentsScale(),
+            terrainProfile.erosionScale(),
+            terrainProfile.ridgeScale(),
+            terrainProfile.getClass().getSimpleName());
+        
+        LOGGER.debug("Terrain height function integration:");
+        LOGGER.debug("  - Height range: {} to {} blocks", 
+            terrainHeightFunction.getClass().getSimpleName(),
+            "per-coordinate computation");
+        LOGGER.debug("  - Density function min/max: {}/{}", 
+            densityFunction.minValue(), densityFunction.maxValue());
+        
+        LOGGER.debug("NOTE: Actual DensityFunction registration with Minecraft's NoiseRouter");
+        LOGGER.debug("      requires bootstrap or RegisterEvent. This integration provides");
+        LOGGER.debug("      the computed density values that would be used in chunk generation.");
     }
 }

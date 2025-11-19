@@ -1,4 +1,4 @@
-    package com.cyber3d.verticalexpansion.terrain;
+package com.cyber3d.verticalexpansion.terrain;
 
 /**
  * NoiseBasedTerrainHeightFunction combines multiple noise fields into a single height value.

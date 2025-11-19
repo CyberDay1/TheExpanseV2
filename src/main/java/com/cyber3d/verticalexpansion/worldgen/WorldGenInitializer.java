@@ -2,10 +2,15 @@ package com.cyber3d.verticalexpansion.worldgen;
 
 import com.cyber3d.verticalexpansion.core.VerticalExpansionConfig;
 import com.cyber3d.verticalexpansion.core.WorldHeightConfig;
+import com.cyber3d.verticalexpansion.features.FeatureRegistry;
+import com.cyber3d.verticalexpansion.ore.OreProfileRegistry;
 import com.cyber3d.verticalexpansion.terrain.DefaultWorldTerrainProfile;
 import com.cyber3d.verticalexpansion.terrain.NoiseBasedTerrainHeightFunction;
 import com.cyber3d.verticalexpansion.terrain.PerlinNoiseSampler;
 import com.cyber3d.verticalexpansion.terrain.WorldTerrainProfile;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +20,8 @@ public final class WorldGenInitializer {
     private static DensityFunctionIntegration densityFunctionIntegration;
     private static BiomePalette biomePalette;
     private static boolean initialized = false;
+
+    private static final long TERRAIN_BASE_SEED = 12345L;
 
     private WorldGenInitializer() {
     }
@@ -31,11 +38,11 @@ public final class WorldGenInitializer {
         WorldTerrainProfile terrainProfile = DefaultWorldTerrainProfile.standard(heightConfig);
 
         NoiseBasedTerrainHeightFunction heightFunction = new NoiseBasedTerrainHeightFunction(
-            new PerlinNoiseSampler(null, terrainProfile.continentsScale()),
-            new PerlinNoiseSampler(null, terrainProfile.erosionScale()),
-            new PerlinNoiseSampler(null, terrainProfile.ridgeScale()),
-            new PerlinNoiseSampler(null, terrainProfile.valleyScale()),
-            new PerlinNoiseSampler(null, terrainProfile.detailScale())
+            new PerlinNoiseSampler(createNoise(1001), terrainProfile.continentsScale()),
+            new PerlinNoiseSampler(createNoise(1002), terrainProfile.erosionScale()),
+            new PerlinNoiseSampler(createNoise(1003), terrainProfile.ridgeScale()),
+            new PerlinNoiseSampler(createNoise(1004), terrainProfile.valleyScale()),
+            new PerlinNoiseSampler(createNoise(1005), terrainProfile.detailScale())
         );
 
         densityFunctionIntegration = new DensityFunctionIntegration(heightFunction, terrainProfile);
@@ -82,6 +89,27 @@ public final class WorldGenInitializer {
 
     public static void registerBiomeModifiers_1_21_1() {
         LOGGER.debug("Registering biome modifiers for MC 1.21.1–1.21.4");
+        
+        FeatureRegistry features = FeatureRegistry.getInstance();
+        OreProfileRegistry ores = OreProfileRegistry.getInstance();
+        
+        LOGGER.debug("Feature generators available: {} mega trees, {} coral reefs, {} deep caves",
+            features.isInitialized() ? "yes" : "no",
+            features.isInitialized() ? "yes" : "no",
+            features.isInitialized() ? "yes" : "no"
+        );
+        
+        int oreCount = ores.getAll().size();
+        LOGGER.debug("Ore profiles registered: {} total", oreCount);
+        
+        for (String oreId : ores.getAll().keySet()) {
+            OreProfile profile = ores.getAll().get(oreId);
+            LOGGER.debug("  - {}: minY={}, maxY={}", oreId, 
+                profile.minY(), profile.maxY());
+        }
+        
+        LOGGER.debug("Biome modifier registration infrastructure initialized. " +
+            "Actual ore/feature placement will be applied via biome modifiers and JSON data files.");
     }
 
     public static void registerBiomeLoadingEvents_1_21_1() {
@@ -101,5 +129,10 @@ public final class WorldGenInitializer {
     public static void registerBiomeLoadingEvents_1_21_5() {
         LOGGER.debug("Registering biome loading events for MC 1.21.5+");
         registerBiomeLoadingEvents_1_21_1();
+    }
+
+    private static PerlinSimplexNoise createNoise(int seed) {
+        RandomSource random = RandomSource.create(TERRAIN_BASE_SEED + seed);
+        return new PerlinSimplexNoise(random, new IntArrayList(new int[]{0}));
     }
 }

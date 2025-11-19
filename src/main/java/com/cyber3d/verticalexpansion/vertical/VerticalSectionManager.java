@@ -23,4 +23,7 @@ public final class VerticalSectionManager {
     public ServerVerticalConfig getConfig() {
         return config;
     }
+
+    public void tick() {
+    }
 }
