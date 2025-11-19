@@ -13,6 +13,7 @@ public final class FeatureRegistry {
     private MegaTreeGenerator megaTreeGenerator;
     private CoralReefGenerator coralReefGenerator;
     private DeepCaveGenerator deepCaveGenerator;
+    private WaterfallFeature waterfallFeature;
     private boolean initialized = false;
 
     private FeatureRegistry() {
@@ -45,8 +46,10 @@ public final class FeatureRegistry {
 
         this.deepCaveGenerator = new DeepCaveGenerator(biomePalette);
 
+        this.waterfallFeature = new WaterfallFeature();
+
         initialized = true;
-        LOGGER.info("VerticalExpansion feature registry initialized with 3 feature generators");
+        LOGGER.info("VerticalExpansion feature registry initialized with 4 feature generators");
     }
 
     public MegaTreeGenerator getMegaTreeGenerator() {
@@ -70,6 +73,13 @@ public final class FeatureRegistry {
         return deepCaveGenerator;
     }
 
+    public WaterfallFeature getWaterfallFeature() {
+        if (!initialized) {
+            throw new IllegalStateException("FeatureRegistry not initialized");
+        }
+        return waterfallFeature;
+    }
+
     public boolean isInitialized() {
         return initialized;
     }
@@ -78,6 +88,7 @@ public final class FeatureRegistry {
         megaTreeGenerator = null;
         coralReefGenerator = null;
         deepCaveGenerator = null;
+        waterfallFeature = null;
         initialized = false;
         LOGGER.debug("FeatureRegistry reset");
     }

@@ -38,6 +38,11 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
     private final double ravineFrequency;
     private final double ravineStretch;
 
+    private final double erosionStrength;
+    private final double erosionThreshold;
+    private final double erosionFlattenMultiplier;
+    private final double erosionRidgeMultiplier;
+
     public DefaultWorldTerrainProfile(
             WorldHeightConfig heightConfig,
             double continentsScale,
@@ -64,7 +69,11 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
             double landRavineStrength,
             double oceanRavineStrength,
             double ravineFrequency,
-            double ravineStretch
+            double ravineStretch,
+            double erosionStrength,
+            double erosionThreshold,
+            double erosionFlattenMultiplier,
+            double erosionRidgeMultiplier
     ) {
         this.heightConfig = heightConfig;
         this.continentsScale = continentsScale;
@@ -92,6 +101,10 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
         this.oceanRavineStrength = oceanRavineStrength;
         this.ravineFrequency = ravineFrequency;
         this.ravineStretch = ravineStretch;
+        this.erosionStrength = erosionStrength;
+        this.erosionThreshold = erosionThreshold;
+        this.erosionFlattenMultiplier = erosionFlattenMultiplier;
+        this.erosionRidgeMultiplier = erosionRidgeMultiplier;
     }
 
     public static DefaultWorldTerrainProfile standard(WorldHeightConfig heightConfig) {
@@ -121,7 +134,11 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
                 0.8,
                 0.6,
                 0.0025,
-                3.0
+                3.0,
+                0.7,
+                0.4,
+                0.6,
+                1.3
         );
     }
 
@@ -263,5 +280,25 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
     @Override
     public double ravineStretch() {
         return ravineStretch;
+    }
+
+    @Override
+    public double erosionStrength() {
+        return erosionStrength;
+    }
+
+    @Override
+    public double erosionThreshold() {
+        return erosionThreshold;
+    }
+
+    @Override
+    public double erosionFlattenMultiplier() {
+        return erosionFlattenMultiplier;
+    }
+
+    @Override
+    public double erosionRidgeMultiplier() {
+        return erosionRidgeMultiplier;
     }
 }

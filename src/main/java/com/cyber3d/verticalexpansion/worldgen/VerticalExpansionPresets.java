@@ -34,7 +34,8 @@ public final class VerticalExpansionPresets {
                 true, true, true,
                 -0.1, -0.5, 20, 60,
                 0.04, 16,
-                0.75, 0.55, 0.0025, 3.0
+                0.75, 0.55, 0.0025, 3.0,
+                0.6, 0.4, 0.65, 1.2
             );
 
         public static final DefaultWorldTerrainProfile EXTREME = 
@@ -46,7 +47,8 @@ public final class VerticalExpansionPresets {
                 true, true, true,
                 -0.08, -0.48, 25, 80,
                 0.05, 20,
-                0.85, 0.65, 0.0020, 3.5
+                0.85, 0.65, 0.0020, 3.5,
+                0.8, 0.35, 0.55, 1.4
             );
     }
 }

@@ -1,0 +1,14 @@
+{
+  "type": "forge:add_features",
+  "biomes": [
+    "minecraft:windswept_hills",
+    "minecraft:windswept_forest",
+    "minecraft:windswept_gravelly_hills",
+    "minecraft:stony_peaks",
+    "minecraft:jagged_peaks"
+  ],
+  "features": [
+    "verticalexpansion:waterfall"
+  ],
+  "step": "vegetal_decoration"
+}

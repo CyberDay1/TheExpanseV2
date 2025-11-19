@@ -20,6 +20,7 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
     private final NoiseSampler valley;
     private final NoiseSampler detail;
     private final NoiseSampler ravineNoise;
+    private final NoiseSampler erosionNoise;
 
     public NoiseBasedTerrainHeightFunction(
             NoiseSampler continents,
@@ -27,7 +28,8 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
             NoiseSampler ridge,
             NoiseSampler valley,
             NoiseSampler detail,
-            NoiseSampler ravineNoise
+            NoiseSampler ravineNoise,
+            NoiseSampler erosionNoise
     ) {
         this.continents = continents;
         this.erosion = erosion;
@@ -35,6 +37,7 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
         this.valley = valley;
         this.detail = detail;
         this.ravineNoise = ravineNoise;
+        this.erosionNoise = erosionNoise;
     }
 
     @Override
@@ -73,6 +76,7 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
             height = baseLandHeight;
         }
 
+        height = applyErosionShaping(x, z, height, profile);
         height = applyRivers(x, z, height, profile);
         height = applyRavines(x, z, height, profile, c);
 
@@ -165,6 +169,43 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
         double carvedHeight = height - carveDepth;
 
         return Math.min(height, carvedHeight);
+    }
+
+    private double applyErosionShaping(
+        int x,
+        int z,
+        double height,
+        WorldTerrainProfile profile
+    ) {
+        double strength = profile.erosionStrength();
+        if (strength <= 0.0) {
+            return height;
+        }
+
+        double erosionRaw = erosionNoise.sample((int)(x * 0.0015), (int)(z * 0.0015));
+        double erosion01 = (erosionRaw * 0.5) + 0.5;
+
+        double threshold = profile.erosionThreshold();
+
+        double dist = Math.abs(erosion01 - threshold);
+        double centerFactor = 1.0 - Math.min(1.0, dist / threshold);
+        centerFactor = centerFactor * centerFactor;
+
+        double erosionFactor = centerFactor * strength;
+
+        double baseReference = profile.baseHeightAmplitude();
+        double delta = height - baseReference;
+
+        double flattenedDelta;
+        if (delta >= 0) {
+            flattenedDelta = delta * profile.erosionRidgeMultiplier();
+        } else {
+            flattenedDelta = delta * profile.erosionFlattenMultiplier();
+        }
+
+        double newDelta = lerp(delta, flattenedDelta, erosionFactor);
+
+        return baseReference + newDelta;
     }
     
     private static double lerp(double a, double b, double t) {

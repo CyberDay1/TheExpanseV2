@@ -49,7 +49,8 @@ public final class HeightDebugCommand {
             new PerlinNoiseSampler(null, profile.ridgeScale()),
             new PerlinNoiseSampler(null, profile.valleyScale()),
             new PerlinNoiseSampler(null, profile.detailScale()),
-            new PerlinNoiseSampler(null, profile.ravineFrequency())
+            new PerlinNoiseSampler(null, profile.ravineFrequency()),
+            new PerlinNoiseSampler(null, 0.0015)
         );
 
         double height = heightFunction.computeHeight(x, z, profile);

@@ -49,4 +49,10 @@ public interface WorldTerrainProfile {
     double oceanRavineStrength();
     double ravineFrequency();
     double ravineStretch();
+
+    // Erosion / tectonics
+    double erosionStrength();
+    double erosionThreshold();
+    double erosionFlattenMultiplier();
+    double erosionRidgeMultiplier();
 }
