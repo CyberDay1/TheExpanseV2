@@ -26,4 +26,19 @@ public final class VerticalSectionManager {
 
     public void tick() {
     }
+
+    public boolean isSectionActiveForBlock(int x, int y, int z) {
+        int sectionIndex = getSectionIndexForY(y);
+        return isSectionActive(sectionIndex);
+    }
+
+    private int getSectionIndexForY(int y) {
+        int minY = config.minY();
+        int sectionHeight = 16;
+        return (y - minY) / sectionHeight;
+    }
+
+    private boolean isSectionActive(int sectionIndex) {
+        return true;
+    }
 }
