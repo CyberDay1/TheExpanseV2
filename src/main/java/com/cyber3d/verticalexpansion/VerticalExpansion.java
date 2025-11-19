@@ -1,6 +1,7 @@
 package com.cyber3d.verticalexpansion;
 
 import com.cyber3d.verticalexpansion.platform.Platform;
+import com.cyber3d.verticalexpansion.worldgen.bootstrap.VerticalBootstrap;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -17,6 +18,7 @@ public class VerticalExpansion {
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             Platform.hooks().init();
+            VerticalBootstrap.initialize();
         });
     }
 }

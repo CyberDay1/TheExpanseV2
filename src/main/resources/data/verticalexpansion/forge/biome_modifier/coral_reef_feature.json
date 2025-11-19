@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_ocean",
+  "features": "verticalexpansion:coral_reef",
+  "step": "underground_structures"
+}

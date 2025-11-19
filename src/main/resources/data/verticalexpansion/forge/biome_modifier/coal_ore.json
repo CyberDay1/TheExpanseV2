@@ -1,0 +1,16 @@
+{
+  "type": "forge:ore_vein",
+  "ore_target": {
+    "predicate": {
+      "blocks": "minecraft:coal_ore"
+    }
+  },
+  "placement": {
+    "type": "uniform",
+    "min_y": 16,
+    "max_y": 136
+  },
+  "vein_size": 17,
+  "frequency": 0.3,
+  "distribution": "triangle"
+}

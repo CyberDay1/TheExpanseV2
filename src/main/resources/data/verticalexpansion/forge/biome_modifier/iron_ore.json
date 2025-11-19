@@ -1,0 +1,16 @@
+{
+  "type": "forge:ore_vein",
+  "ore_target": {
+    "predicate": {
+      "blocks": "minecraft:iron_ore"
+    }
+  },
+  "placement": {
+    "type": "gaussian",
+    "min_y": -64,
+    "max_y": 72
+  },
+  "vein_size": 9,
+  "frequency": 0.25,
+  "distribution": "gaussian"
+}

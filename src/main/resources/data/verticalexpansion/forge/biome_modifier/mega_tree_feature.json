@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_mountain",
+  "features": "verticalexpansion:mega_tree",
+  "step": "underground_structures"
+}

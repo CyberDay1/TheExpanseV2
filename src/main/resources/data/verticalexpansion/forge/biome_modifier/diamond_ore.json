@@ -1,0 +1,16 @@
+{
+  "type": "forge:ore_vein",
+  "ore_target": {
+    "predicate": {
+      "blocks": "minecraft:diamond_ore"
+    }
+  },
+  "placement": {
+    "type": "uniform",
+    "min_y": -64,
+    "max_y": 16
+  },
+  "vein_size": 8,
+  "frequency": 0.08,
+  "distribution": "uniform"
+}

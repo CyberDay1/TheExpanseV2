@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 public final class DensityFunctionIntegration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("VerticalExpansion");
+    private static DensityFunctionIntegration instance;
     
     private final TerrainHeightDensityFunction densityFunction;
     private final TerrainHeightFunction terrainHeightFunction;
@@ -27,10 +28,22 @@ public final class DensityFunctionIntegration {
             terrainHeightFunction,
             terrainProfile
         );
+        DensityFunctionIntegration.instance = this;
+    }
+
+    public static DensityFunctionIntegration getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("DensityFunctionIntegration not initialized");
+        }
+        return instance;
     }
 
     public TerrainHeightDensityFunction getDensityFunction() {
         return densityFunction;
+    }
+
+    public DensityFunction getTerrainDensityFunction() {
+        return new TerrainHeightDensityFunction(terrainHeightFunction, terrainProfile);
     }
 
     public TerrainHeightFunction getHeightFunction() {
