@@ -7,9 +7,11 @@ public final class BiomePalette {
 
     private final Map<Integer, String> bandToBiome = new HashMap<>();
     private final int seaLevel;
+    private final int deepOceanDepth;
 
-    public BiomePalette(int seaLevel) {
+    public BiomePalette(int seaLevel, int deepOceanDepth) {
         this.seaLevel = seaLevel;
+        this.deepOceanDepth = deepOceanDepth;
         initializeBiomeMappings();
     }
 
@@ -32,7 +34,7 @@ public final class BiomePalette {
             return bandToBiome.get(3);
         } else if (height >= seaLevel) {
             return bandToBiome.get(2);
-        } else if (height >= seaLevel - 64) {
+        } else if (height >= seaLevel - deepOceanDepth) {
             return bandToBiome.get(1);
         } else {
             return bandToBiome.get(0);

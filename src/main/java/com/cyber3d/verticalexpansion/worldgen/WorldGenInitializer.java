@@ -55,9 +55,14 @@ public final class WorldGenInitializer {
         densityFunctionIntegration = new DensityFunctionIntegration(heightFunction, terrainProfile);
         densityFunctionIntegration.initialize();
 
-        biomePalette = new BiomePalette(heightConfig.seaLevel());
+        // Tie biome bands to the *actual* deep-ocean depth from the terrain profile
+        biomePalette = new BiomePalette(heightConfig.seaLevel(), terrainProfile.deepOceanDepth());
         if (VerticalExpansionConfig.isDebugLoggingEnabled()) {
-            LOGGER.debug("BiomePalette initialized with sea level: {}", heightConfig.seaLevel());
+            LOGGER.debug(
+                "BiomePalette initialized with sea level: {} and deep ocean depth: {}",
+                heightConfig.seaLevel(),
+                terrainProfile.deepOceanDepth()
+            );
         }
 
         ChunkGeneratorRegistry.registerChunkGenerator();
