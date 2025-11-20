@@ -5,21 +5,18 @@
   "respawn_anchor_works": false,
   "bed_works": true,
   "raid_capable": true,
+  "has_raids": true,
   "has_skylight": true,
   "has_ceiling": false,
   "coordinate_scale": 1.0,
   "ambient_light": 0.0,
   "fixed_time": null,
   "logical_height": 1024,
-
   "min_y": -256,
   "height": 1280,
-
   "infiniburn": "#minecraft:infiniburn_overworld",
   "effects": "minecraft:overworld",
 
-  "monster_spawn_light_level": {
-    "value": 7
-  },
+  "monster_spawn_light_level": 7,
   "monster_spawn_block_light_limit": 0
 }
