@@ -102,12 +102,38 @@ public final class NoiseBasedTerrainHeightFunction implements TerrainHeightFunct
         double detailEffect = detail * (profile.baseHeightAmplitude() * 0.3);
         
         double extremeBoost = 0.0;
+        double skyBoost = 0.0;
+
         if (profile.enableMegaMountains()) {
+            // Existing extreme peak logic – tall continental interiors where erosion is low.
             double extremeMask = clamp(erosionFactor * ((c01 - 0.5) * 2.0), 0.0, 1.0);
             extremeBoost = extremeMask * profile.extremeMountainBoost();
+
+            // Optional "sky" boost: in the rarest, most extreme cases, push terrain
+            // further toward the top of the world height range.
+            //
+            // This only runs when sky terrain is enabled, and only where the same
+            // extremeMask is already high, so it affects *some* columns, not all.
+            if (profile.enableSkyTerrain() && extremeMask > 0.0) {
+                // Sharpen the mask so only the strongest extreme areas are affected.
+                double skyMask = extremeMask * extremeMask;
+
+                // Target near the top of the world, with a small safety margin.
+                double targetTop = profile.maxY() - 16.0;
+
+                // Use a reference a bit above sea level so oceans and lowlands
+                // don't get dragged upwards.
+                double baseReference = profile.seaLevel() + profile.baseHeightAmplitude();
+                double available = Math.max(0.0, targetTop - baseReference);
+
+                // Use a moderate fraction of the available height so we only
+                // sometimes hit build limit after clamp(), instead of flattening
+                // huge plateaus at maxY.
+                skyBoost = skyMask * available * 0.35;
+            }
         }
         
-        return base + mountainBoost + valleyCut + detailEffect + extremeBoost;
+        return base + mountainBoost + valleyCut + detailEffect + extremeBoost + skyBoost;
     }
 
     private double applyRivers(int x, int z, double height, WorldTerrainProfile profile) {
