@@ -4,7 +4,7 @@
       "type": "minecraft:overworld",
       "generator": {
         "type": "minecraft:noise",
-        "settings": "minecraft:overworld",
+        "settings": "verticalexpansion:overworld_1280",
         "biome_source": {
           "type": "minecraft:multi_noise",
           "preset": "minecraft:overworld"
