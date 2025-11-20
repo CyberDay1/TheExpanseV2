@@ -30,9 +30,6 @@ public final class BiomePalette {
     public BiomePalette(int seaLevel, int deepOceanDepth) {
         this.seaLevel = seaLevel;
         this.deepOceanDepth = Math.max(0, deepOceanDepth);
-    public BiomePalette(int seaLevel, int deepOceanDepth) {
-        this.seaLevel = seaLevel;
-        this.deepOceanDepth = deepOceanDepth;
         initializeBiomeMappings();
     }
 
@@ -58,7 +55,7 @@ public final class BiomePalette {
      *   - Band 1 (ocean)     : deepOceanFloorY <= y < seaLevel
      *   - Band 0 (deep_dark) : y < deepOceanFloorY
      *
-     * This guarantees that *all* blocks under the sea surface down to the
+     * This guarantees that all blocks under the sea surface down to the
      * deepest ocean floor are tagged as ocean, instead of flipping to
      * deep_dark/land biomes below an arbitrary height.
      */
@@ -76,7 +73,6 @@ public final class BiomePalette {
             return bandToBiome.get(2);
         } else if (height >= deepOceanFloorY) {
             // Entire water column above the deepest ocean floor
-        } else if (height >= seaLevel - deepOceanDepth) {
             return bandToBiome.get(1);
         } else {
             // Extreme depths below the deepest ocean floor
