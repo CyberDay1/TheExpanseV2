@@ -110,35 +110,35 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
     public static DefaultWorldTerrainProfile standard(WorldHeightConfig heightConfig) {
         return new DefaultWorldTerrainProfile(
                 heightConfig,
-                0.002,    
-                0.003,    
-                0.0025,   
-                0.004,    
-                0.01,     
-                100.0,    
-                200.0,    
-                50.0,     
-                300.0,    
-                220,      
-                420,      
-                900,      
-                true,     
-                true,     
-                true,
-                -0.1,
-                -0.5,
-                20,
-                60,
-                0.04,
-                16,
-                0.8,
-                0.6,
-                0.0025,
-                3.0,
-                0.7,
-                0.4,
-                0.6,
-                1.3
+                0.002,    // continentsScale
+                0.003,    // erosionScale
+                0.0025,   // ridgeScale
+                0.004,    // valleyScale
+                0.01,     // detailScale
+                100.0,    // baseHeightAmplitude
+                200.0,    // mountainBoostAmplitude
+                50.0,     // valleyDepth
+                300.0,    // extremeMountainBoost
+                220,      // highlandsStartY
+                420,      // extremeStartY
+                900,      // skyBandStartY
+                true,     // enableSkyTerrain
+                true,     // enableUndergroundRivers
+                true,     // enableMegaMountains
+                -0.1,     // oceanThreshold
+                -0.5,     // deepOceanThreshold
+                64,       // shallowOceanDepth (was 20; deeper shelves)
+                192,      // deepOceanDepth (was 60; much deeper basins)
+                0.04,     // riverWidth
+                16,       // riverMaxDepth
+                0.8,      // landRavineStrength
+                0.6,      // oceanRavineStrength
+                0.0025,   // ravineFrequency
+                3.0,      // ravineStretch
+                0.7,      // erosionStrength
+                0.4,      // erosionThreshold
+                0.6,      // erosionFlattenMultiplier
+                1.3       // erosionRidgeMultiplier
         );
     }
 
