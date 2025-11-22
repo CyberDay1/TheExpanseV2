@@ -201,7 +201,7 @@
     }
   },
   "ore_veins_enabled": true,
-  "sea_level": 60,
+  "sea_level": 112,
   "spawn_target": [
     {
       "continentalness": [-0.11, 1.0],
