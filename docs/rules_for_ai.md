@@ -55,11 +55,16 @@ These rules apply to all AI tools operating on this project.
 
 ## 5. External Code & Licensing
 
-- You **must not** copy code directly from external projects (including Tectonic), even if their license permits it.
+- You **may** use code from MIT-licensed projects (including Tectonic) with proper attribution:
+  - Include the original project's copyright notice in the source file header.
+  - Add a comment indicating the source: `// Adapted from <project> (<url>) under MIT license`.
+  - Ensure `LICENSE` or `ATTRIBUTION.md` documents all borrowed code.
 - You **may**:
-  - Use high-level ideas and patterns (e.g., multi-noise terrain, config schemas).
-  - Recreate similar behavior with original code.
-- If you implement functionality *inspired* by another project, document it in comments (e.g. “inspired by Tectonic-style noise composition”).
+  - Use high-level ideas and patterns from any project.
+  - Modify borrowed code to fit this project's architecture and conventions.
+- When borrowing substantial code blocks:
+  - Preserve original copyright headers.
+  - Document what was changed and why.
 
 ---
 
@@ -113,7 +118,7 @@ public int computeHeight(int x, int z, WorldTerrainProfile profile) {
 
 When configuring Codex/Zencoder for this repo, use the following short summary:
 
-> “This project is a NeoForge Minecraft 1.21.1–1.21.10 mod called VerticalExpansion.  
+> "This project is a NeoForge Minecraft 1.21.1–1.21.10 mod called VerticalExpansion.  
 > Follow docs in the `docs/` folder (architecture, terrain_design, vertical_sections, multiversion_support).  
 > Use the PlatformHooks abstraction for all version-specific logic.  
 > Implement terrain using WorldTerrainProfile + TerrainHeightFunction as defined in terrain_design.md.  

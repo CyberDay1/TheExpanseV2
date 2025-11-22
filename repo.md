@@ -1,132 +1,302 @@
 # TheExpanseV2 Repository
 
 ## Overview
-TheExpanseV2 is a Gradle-based Java project containing multiple components, with the primary focus being the **Tectonic** Minecraft mod for terrain generation.
 
-## Project Structure
+**TheExpanseV2** (VerticalExpansion) is a **NeoForge mod** for **Minecraft 1.21.1–1.21.10** that transforms world generation by **globally extending the Overworld's vertical height** and replacing vanilla terrain.
 
-### Root Directory
-- **Main Project**: Simple Gradle Java project with a basic `Main.java` class
-- **Build System**: Gradle with wrapper scripts (gradlew, gradlew.bat)
-- **Group ID**: `org.example`
-- **Version**: `1.0-SNAPSHOT`
+**Core Features:**
+- Extends Overworld world height from **Y -256 → Y 1024** (configurable) for **all overworlds** while the mod is installed
+- Ensures there is **never a vanilla-height Overworld** when this mod is present – the vanilla `minecraft:overworld` dimension type and the Normal world preset are both overridden to use the extended range
+- Replaces vanilla Overworld terrain with a multi-noise terrain pipeline using the `verticalexpansion:vertical_noise` settings
+- Adds large-scale features: mega mountains, deep caves, massive trees, coral reefs
+- Implements a **Vertical Section Manager** to keep performance optimal at tall heights
+- Maintains multiversion support across patch versions using platform abstraction layer
 
-### `/tectonic-rewrite-squared` - Tectonic Mod
-A sophisticated Minecraft mod that transforms terrain generation. The mod is a modular project supporting multiple Minecraft versions and mod loaders.
+---
 
-#### Directory Structure
+## Project Metadata
+
+- **Group ID**: `com.cyber3d.verticalexpansion`
+- **Module ID**: `verticalexpansion`
+- **Version**: `0.1.0`
+- **Target Minecraft**: `1.21.1–1.21.10`
+- **Mod Loader**: NeoForge (`21.1.209`)
+- **Java Version**: 21 (LTS)
+
+---
+
+## Directory Structure
+
 ```
-tectonic-rewrite-squared/
-├── src/
-│   ├── common/main/java/dev/worldgen/tectonic/
-│   │   ├── client/              # Client-side features (ConfigListBuilder)
-│   │   ├── command/             # Commands (TectonicCommand)
-│   │   ├── config/              # Configuration system (ConfigHandler, ConfigState)
-│   │   │   └── state/
-│   │   │       └── object/      # Config objects (HeightLimits, NoiseState)
-│   │   ├── mixin/               # Minecraft behavior modifications via Mixin
-│   │   │   └── client/
-│   │   ├── worldgen/
-│   │   │   └── densityfunction/ # Custom density functions (ConfigClamp, ConfigConstant, ConfigNoise, Invert)
-│   │   ├── Tectonic.java        # Main mod class
-│   │   └── TectonicTags.java    # Minecraft tag definitions
-│   │
-│   ├── fabric/                  # Fabric mod loader implementations
-│   │   ├── 1.20.1/main/java/dev/worldgen/tectonic/
-│   │   ├── 1.21.1/main/java/dev/worldgen/tectonic/
-│   │   └── 1.21.10/main/java/dev/worldgen/tectonic/
-│   │
-│   ├── forge/                   # Forge mod loader implementations
-│   │   └── 1.20.1/main/java/dev/worldgen/tectonic/
-│   │
-│   └── neoforge/                # NeoForge mod loader implementations
-│       └── 1.21.1/main/java/dev/worldgen/tectonic/
+C:\Users\conno\IdeaProjects\TheExpanseV2/
+├── docs/                          # Design and architecture documentation
+│   ├── architecture.md            # High-level system design
+│   ├── terrain_design.md          # Noise fields, height bands, terrain shaping
+│   ├── vertical_sections.md       # Vertical activity policy and manager
+│   ├── multiversion_support.md    # Version detection and platform hooks
+│   ├── rules_for_ai.md            # Guidelines for AI code assistants
+│   └── dev_debugging.md           # Debugging tips and development notes
 │
-├── build.gradle.kts
-├── gradle.properties
-├── README.md
-└── uploader.py
+├── src/main/
+│   ├── java/com/cyber3d/verticalexpansion/
+│   │   ├── core/                  # World height config, registries, utilities
+│   │   ├── terrain/               # Noise fields, terrain profiles, height functions
+│   │   ├── worldgen/              # Chunk generator, noise router integration
+│   │   ├── features/              # Trees, coral, mega caves, structures
+│   │   ├── ore/                   # Ore profiles, ore placement, modded ore support
+│   │   ├── vertical/              # VerticalSectionManager, VerticalSectionPolicy
+│   │   ├── platform/              # Version detection, PlatformHooks implementations
+│   │   └── api/                   # Public extension points
+│   │
+│   └── resources/
+│       ├── data/
+│       │   ├── minecraft/         # Vanilla-namespace worldgen data
+│       │   └── verticalexpansion/ # Custom mod data (biome modifiers, features, etc.)
+│       └── META-INF/
+│           └── neoforge.mods.toml # NeoForge mod metadata
+│
+├── src/test/
+│   └── java/                      # JUnit 5 test suite
+│
+├── build.gradle.kts               # Gradle build configuration
+├── gradle.properties              # Minecraft version, NeoForge version, mod metadata
+├── settings.gradle.kts            # Gradle project settings
+│
+├── IMPLEMENTATION_STATUS.md       # Feature checklist and progress tracking
+├── PHASE3_ARCHITECTURE.md         # Phase 3 design notes
+├── PHASE4_ARCHITECTURE.md         # Phase 4 design notes
+└── CHECKLIST_COMPLETION.md        # Task completion tracking
+
 ```
 
-## Key Features
+---
 
-### Configuration System
-- **ConfigHandler**: Manages configuration loading and persistence
-- **ConfigState**: Stores current configuration state
-- **ConfigPresets**: Pre-defined configuration templates (V1ConfigState, V2ConfigState)
-- **HeightLimits**: Configuration for height constraints
-- **NoiseState**: Configuration for noise generation parameters
+## Key Systems
 
-### Terrain Generation
-- **Density Functions**: Custom implementations for terrain generation
-  - `ConfigClamp`: Clamps values within configured limits
-  - `ConfigConstant`: Provides constant values
-  - `ConfigNoise`: Generates configurable noise
-  - `Invert`: Inverts density function values
+### 1. **Terrain Generation Pipeline**
 
-### Mixins
-Tectonic modifies Minecraft internals through Mixins targeting:
-- Biome generation
-- Chunk access and generation
-- Blending data
-- Dimension types
-- Heightmaps
-- Noise-based chunk generation
-- Noise settings
-- Structure pieces
-- Temperature modifiers
-- World carvers
+The terrain is built using **Tectonic-inspired** (but original) noise composition:
 
-## Build System
+**Noise Fields:**
+- **Continents**: Large-scale landmass distribution
+- **Erosion**: Valley carving and weathering
+- **Ridges**: Mountain range formation
+- **Valleys/Rivers**: Water flow patterns
+- **Detail**: Local surface variation
+
+**Height Function (`TerrainHeightFunction`):**
+- Combines noise fields into a single height calculation
+- Takes X, Z coordinates and `WorldTerrainProfile`
+- Returns final surface height, clamped to `[minY, maxY]`
+
+**Height Bands (Vertical Structure):**
+- **Deep Underground** (Y -256…0): Dense stone, mega caves, high ore density
+- **Core Surface** (Y 0…256): Primary terrain (plains, forests, oceans)
+- **Highlands** (Y 256…512): Common mountains and cliffs
+- **Extreme Peaks** (Y 512…900): Rare vertical terrain, jagged ridges
+- **Sky Band** (Y 900+): Optional floating islands (configurable)
+
+See **`docs/terrain_design.md`** for full specification.
+
+### 2. **Vertical Section Manager**
+
+Reduces performance cost at extreme heights by managing chunk section activity:
+
+**Concepts:**
+- Vanilla chunks are divided into 16-block-tall **sections**
+- Only sections near a player's current Y are kept **active**
+- Active sections: tick, render, stay in memory
+- Inactive sections: unloaded or stored compactly
+
+**Section Index Formula:**
+```
+sectionIndex = floor((y - minY) / 16)
+```
+
+**Configuration:**
+- `verticalSectionWindow`: range of active sections around players
+- Configurable per-player or global
+
+See **`docs/vertical_sections.md`** for full behavior.
+
+### 3. **World Height Configuration**
+
+All worldgen code derives bounds from a **`WorldHeightConfig`** interface:
+
+```java
+public interface WorldHeightConfig {
+    int minY();      // Default: -256
+    int maxY();      // Default: 1024
+    int seaLevel();  // Default: 64
+}
+```
+
+**Key Rule:** Never hard-code vanilla height constants. Always use the config.
+
+### 4. **Ore System**
+
+Extends vanilla ore generation to the new height range:
+
+**OreProfile:**
+- Target blocks (Minecraft tag)
+- Y range (min/max)
+- Distribution curve
+- Vein size and frequency
+- Biome filters
+
+**OreProfileRegistry:**
+- Stores vanilla and modded ore profiles
+- Vanilla ores are rescaled to new height bands
+- Modded ores can register custom profiles via API
+
+### 5. **Feature Sets**
+
+#### Massive Mountains
+- Arise from continent/ridge/erosion noise interactions
+- Typical peaks: 300–500 Y, rare peaks: 600–900 Y
+- Configurable height and density
+
+#### Massive Trees
+- 100+ block tall variants (Oak, Dark Oak, Jungle)
+- Generated as structured features with:
+  - Trunk path and branch endpoints
+  - Canopy blobs and decorations
+- Configurable height, density, biome allowlist/denylist
+
+#### Coral Reefs
+- Multi-chunk blob structures in warm oceans
+- 3D noise field controls distribution
+- Configurable radius, thickness, density
+
+#### Deep Caves & Mega Caves
+- Expanded to utilize full depth (-256 to surface)
+- More complex cave systems in extended depth
+
+---
+
+## Platform Abstraction (Multiversion Support)
+
+The mod ships **one JAR** supporting Minecraft `1.21.1–1.21.10`.
+
+**PlatformHooks Pattern:**
+- All version-specific code lives in `platform/`
+- Core code (terrain, features, vertical) is version-agnostic
+- At runtime, detect Minecraft patch version and instantiate correct hook implementation
+
+**Example:**
+- `PlatformHooks_1_21_1` for early patches
+- `PlatformHooks_1_21_5` for later patches (if needed)
+
+**Rule:** Core code must never check version numbers or call patch-specific APIs directly.
+
+See **`docs/multiversion_support.md`** for details.
+
+---
+
+## Build & Testing
 
 ### Gradle Configuration
-- **Plugin**: Java
-- **Java Testing**: JUnit 5 (Jupiter)
-- **Repositories**: Maven Central
+- **Plugin**: `net.neoforged.moddev` 2.0+
+- **Java**: Version 21
+- **Testing**: JUnit 5 (Jupiter)
+- **Repositories**: Maven Central, NeoForge
 
-### Gradle Properties
-- Supports multiple Minecraft versions and mod loaders through version-specific source sets
+### Build Commands
+```bash
+./gradlew build        # Compile and package
+./gradlew test         # Run JUnit 5 tests
+./gradlew runClient    # Run Minecraft client
+./gradlew runServer    # Run Minecraft server
+```
 
-### Build Artifacts
-Built from `build.gradle.kts` files in both root and tectonic-rewrite-squared directories
+### Key Gradle Configuration
+In `build.gradle.kts`:
+- Excludes vanilla density functions (to preserve vanilla definitions)
+- Excludes vanilla dimension type override (to prevent height crashes)
+- Configured for mod loader compatibility
 
-## Supported Platforms
+---
 
-### Fabric Mod Loader
-- Minecraft 1.20.1
-- Minecraft 1.21.1
-- Minecraft 1.21.10
+## Code Conventions & Rules
 
-### Forge Mod Loader
-- Minecraft 1.20.1
+1. **No Hard-Coded Vanilla Heights**
+   - Use `WorldHeightConfig` for all height constants
+   - Never reference vanilla min/max Y in worldgen code
 
-### NeoForge Mod Loader
-- Minecraft 1.21.1
+2. **Version Logic Isolated to `platform/` Package**
+   - Core code remains version-agnostic
+   - Use `Platform.hooks()` to access version-specific behavior
 
-## External Resources
-- **Modrinth**: https://modrinth.com/mod/tectonic
+3. **Document Intent Near TODOs**
+   - When leaving AI-fillable TODOs, explain requirements in comments
+   - Follow the pattern: `// TODO: AI IMPLEMENT` with detailed description
 
-## Testing
-- **Framework**: JUnit 5
-- **Test Sources**: `src/test/java/`
-- **Test Configuration**: Custom test task with JUnit Platform launcher
+4. **No External Code Copying**
+   - Tectonic is used as a **conceptual reference only**
+   - All implementations are original (inspired by, not copied from)
+   - Document inspiration in code comments if applicable
 
-## Notable Components
+5. **Keep Docs in Sync**
+   - If changing major terrain/vertical logic, update corresponding `.md` file
+   - The design docs are the source of truth
 
-### TectonicCommand
-Provides in-game commands for mod configuration and management
+6. **Tests & Invariants**
+   - Add tests when modifying public logic (especially terrain/vertical)
+   - Preserve key invariants:
+     - Heights remain within `[minY, maxY]`
+     - Vertical section windows behave as documented
+     - Platform hooks remain the only source of version-specific behavior
 
-### TectonicModMenuCompat
-Compatibility layer for ModMenu on Fabric loaders
+---
 
-### ConfigResourceCondition
-Resource condition handler for Fabric 1.21.1+ and NeoForge
+## Documentation Files
 
-### Uploaders
-`uploader.py` - Python script for uploading mod distributions
+| File | Purpose |
+|------|---------|
+| **`docs/architecture.md`** | High-level system design, core goals, structure overview |
+| **`docs/terrain_design.md`** | Noise fields, height bands, terrain shaping algorithms |
+| **`docs/vertical_sections.md`** | Vertical section activity policy and manager implementation |
+| **`docs/multiversion_support.md`** | Version detection, platform hooks, patch-specific handling |
+| **`docs/rules_for_ai.md`** | Rules for AI assistants working in this codebase |
+| **`docs/dev_debugging.md`** | Development tips, debugging hints, common issues |
+| **`IMPLEMENTATION_STATUS.md`** | Feature checklist and implementation progress |
 
-## Development Notes
-- Multi-platform support requires careful version management across different mod loaders
-- Configuration system separates concerns between preset templates and runtime state
-- Mixins allow deep integration with Minecraft's world generation pipeline
-- Custom density functions enable flexible terrain generation customization
+---
+
+## Development Workflow
+
+### Getting Started
+1. Read **`docs/architecture.md`** for system overview
+2. Read **`docs/terrain_design.md`** for terrain pipeline
+3. Read **`docs/vertical_sections.md`** for vertical system
+4. Read **`docs/rules_for_ai.md`** if working with AI tools
+
+### Adding Features
+- **New terrain behavior**: Modify `WorldTerrainProfile` and `TerrainHeightFunction`, update `terrain_design.md`
+- **New feature**: Add to `features/`, configure in datapack or server config
+- **New ore type**: Register in `OreProfileRegistry` with `OreProfile`
+- **Version-specific code**: Add to `platform/` package, never in core code
+
+### Running Tests
+```bash
+./gradlew test
+```
+
+### Debugging
+See **`docs/dev_debugging.md`** for debugging tips, log locations, and common issues.
+
+---
+
+## Project Status
+
+- **Version**: 0.1.0 (Alpha)
+- **Target Release**: Minecraft 1.21.1–1.21.10
+- **Progress**: See `IMPLEMENTATION_STATUS.md` and `CHECKLIST_COMPLETION.md`
+
+---
+
+## External Links
+
+- **NeoForge**: https://neoforged.net/
+- **Minecraft Modding Wiki**: https://docs.neoforged.net/
+- **Tectonic (Inspiration)**: https://modrinth.com/mod/tectonic (Conceptual reference only)

@@ -115,13 +115,13 @@ public final class DefaultWorldTerrainProfile implements WorldTerrainProfile {
                 0.0025,   // ridgeScale
                 0.004,    // valleyScale
                 0.01,     // detailScale
-                100.0,    // baseHeightAmplitude
-                200.0,    // mountainBoostAmplitude
+                120.0,    // baseHeightAmplitude (slightly taller overall terrain)
+                260.0,    // mountainBoostAmplitude (stronger normal mountains)
                 50.0,     // valleyDepth
-                300.0,    // extremeMountainBoost
-                220,      // highlandsStartY
-                420,      // extremeStartY
-                900,      // skyBandStartY
+                400.0,    // extremeMountainBoost (push rare peaks much higher)
+                260,      // highlandsStartY (start highlands higher in the column)
+                640,      // extremeStartY (extreme peaks begin closer to top of world)
+                924,      // skyBandStartY (about 100 blocks below maxY=1024)
                 true,     // enableSkyTerrain
                 true,     // enableUndergroundRivers
                 true,     // enableMegaMountains

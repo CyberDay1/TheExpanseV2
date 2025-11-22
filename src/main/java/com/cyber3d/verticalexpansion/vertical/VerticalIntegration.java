@@ -73,6 +73,6 @@ public final class VerticalIntegration {
             return;
         }
         
-        manager.tick();
+        manager.tick(server);
     }
 }

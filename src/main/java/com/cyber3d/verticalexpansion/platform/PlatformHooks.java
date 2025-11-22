@@ -21,4 +21,6 @@ public interface PlatformHooks {
     void hookBiomeLoadingEvents();
 
     void registerVerticalSectionIntegration();
+    
+    void registerRenderingCulling();
 }

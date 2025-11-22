@@ -20,6 +20,9 @@ Vertical world expansion and advanced terrain generation:
 - Deep oceans, wide rivers, ravines, waterfalls
 '''
 
+[[mixins]]
+config="verticalexpansion.mixins.json"
+
 # === Dependencies ===
 
 [[dependencies.verticalexpansion]]

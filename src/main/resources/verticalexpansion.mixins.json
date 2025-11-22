@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "com.cyber3d.verticalexpansion.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "verticalexpansion.refmap.json",
+  "mixins": [
+    "ChunkAccessMixin",
+    "ChunkSerializerMixin",
+    "DimensionTypeAccessor",
+    "HeightmapMixin",
+    "IOWorkerMixin",
+    "NoiseBasedChunkGeneratorMixin",
+    "NoiseSettingsAccessor",
+    "ServerLevelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -16,6 +16,9 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 @Mod("verticalexpansion")
 public class VerticalExpansion {
 
+    public static final String BLENDING_KEY = "verticalexpansion_blending";
+    public static final int BLENDING_VERSION = 1;
+
     public VerticalExpansion(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);

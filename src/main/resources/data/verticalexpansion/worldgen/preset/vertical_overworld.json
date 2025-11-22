@@ -2,16 +2,13 @@
   "type": "minecraft:world_preset",
   "dimensions": {
     "minecraft:overworld": {
-      "type": "minecraft:dimension_type",
-      "dimension": {
-        "type": "minecraft:overworld",
-        "generator": {
-          "type": "minecraft:noise",
-          "settings": "verticalexpansion:vertical_noise",
-          "biome_source": {
-            "type": "minecraft:multi_noise",
-            "preset": "minecraft:overworld"
-          }
+      "type": "verticalexpansion:vertical_overworld",
+      "generator": {
+        "type": "minecraft:noise",
+        "settings": "verticalexpansion:vertical_noise",
+        "biome_source": {
+          "type": "minecraft:multi_noise",
+          "preset": "minecraft:overworld"
         }
       }
     }

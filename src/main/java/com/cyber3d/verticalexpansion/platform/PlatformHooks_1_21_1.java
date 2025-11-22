@@ -22,6 +22,7 @@ public final class PlatformHooks_1_21_1 implements PlatformHooks {
         registerBiomeModifiers();
         hookBiomeLoadingEvents();
         registerVerticalSectionIntegration();
+        registerRenderingCulling();
         LOGGER.info("VerticalExpansion initialization complete");
     }
 
@@ -58,5 +59,10 @@ public final class PlatformHooks_1_21_1 implements PlatformHooks {
     @Override
     public void registerVerticalSectionIntegration() {
         VerticalIntegration.register_1_21_1();
+    }
+    
+    @Override
+    public void registerRenderingCulling() {
+        LOGGER.debug("Registering vertical rendering culling for 1.21.1–1.21.4");
     }
 }
